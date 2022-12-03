@@ -1,4 +1,6 @@
 
+from google.cloud import storage
+
 import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
@@ -17,8 +19,72 @@ from pycocotools.coco import COCO
 from detectron2.data.datasets import register_coco_instances
 
 
-# Insert here function to load data
-#bla bla
+def download_file(bucket_name = 'foodygs',
+                              blob_name = 'Nutrition/nutrition.csv',
+                              download_to_disk = False,
+                              destination_file_name = '../raw_data/data.csv'):
+
+    """Download a file from Google Cloud Storage.
+    If download_to_disk = False then it will save to memory.
+    If download_to_disk = True then it will save to your local disk.
+    """
+
+    storage_client = storage.Client()
+
+    bucket = storage_client.bucket(bucket_name)
+
+    blob = bucket.blob(blob_name)
+
+    if download_to_disk == True:
+
+        blob.download_to_filename(destination_file_name)
+        print(
+            "Downloaded storage object {} from bucket {} to local file {}.".format(
+            blob_name, bucket_name, destination_file_name
+        )
+    )
+    contents = ''
+
+    if download_to_disk == False:
+        print(f"retrieving {blob_name} from gcloud")
+        contents = blob.download_as_string()
+        print(f"received... test")
+    return contents
+
+print("Files downloaded")
+
+
+def blob_coco_register():
+    print('----- blob coco register -----')
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('foodygs')
+    print('-- storage and bucket has been defined')
+
+    str_folder_name_on_gcs = 'foodyai_data/Training_2/images/'
+    blob_train_annotations = bucket.blob('foodyai_data/Training_2/annotations.json')
+    blobs = bucket.list_blobs(delimiter='/',prefix=str_folder_name_on_gcs)
+    print('-- training annotations and images blobs has been created')
+
+    blob_val_annotations = bucket.blob('foodyai_data/Validation_2/annotations.json')
+    blobs_val = bucket.list_blobs(delimiter='/',prefix='foodyai_data/Validation_2/images/')
+    print('-- validation annotations and images blobs has been created')
+
+    print('-- loading the datasets in coco format and registering them as instances')
+    train_annotations_path = blob_train_annotations.download_as_string()
+    val_annotations_path = blob_val_annotations.download_as_string()
+    print('-- annotation downloaded as string')
+
+    train_coco = COCO(train_annotations_path)
+    print('-- made annotation coco format')
+
+    print('-- register coco instances training dataset begin')
+    register_coco_instances("training_dataset", {},train_annotations_path, blobs)
+
+    print('-- register coco instances validation dataset begin')
+
+    register_coco_instances("validation_dataset", {},val_annotations_path, blobs_val)
+    print('-- register coco instances end ')
+
 
 
 def custom_config(training_dataset = ("training_dataset",),
@@ -85,6 +151,7 @@ def evaluate_model(validation_dataset = "validation_dataset",
     return valResults, cfg, trainer
 
 if __name__ == '__main__':
-    # function to load data
+    download_file()
+    blob_coco_register()
     custom_config()
     #evaluate_model()
