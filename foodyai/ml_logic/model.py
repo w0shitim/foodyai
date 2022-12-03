@@ -16,18 +16,10 @@ import os
 from pycocotools.coco import COCO
 from detectron2.data.datasets import register_coco_instances
 
-train_annotations_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Training_2/annotations.json'
-train_images_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Training_2/images'
 
-val_annotations_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Validation_2/annotations.json'
-val_images_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Validation_2/images'
+# Insert here function to load data
+#bla bla
 
-train_coco = COCO(train_annotations_path)
-
-register_coco_instances("training_dataset", {},train_annotations_path, train_images_path)
-register_coco_instances("validation_dataset", {},val_annotations_path, val_images_path)
-
-print("Registered coco instances")
 
 def custom_config(training_dataset = ("training_dataset",),
                   num_workers = 2,
@@ -36,7 +28,7 @@ def custom_config(training_dataset = ("training_dataset",),
                   batch_size = 128,
                   ims_per_batch = 10,
                   learning_rate = 0.00025,
-                  max_iter = 2,
+                  max_iter = 20,
                   output_dir = "logs/"):
 
     """Initialize pre-trained model"""
@@ -93,5 +85,6 @@ def evaluate_model(validation_dataset = "validation_dataset",
     return valResults, cfg, trainer
 
 if __name__ == '__main__':
+    # function to load data
     custom_config()
-    evaluate_model()
+    #evaluate_model()
