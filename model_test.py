@@ -63,3 +63,17 @@ blobs = bucket.list_blobs(prefix=prefix)  # Get list of files
 for blob in blobs:
     filename = blob.name.replace('/', '_')
     blob.download_to_filename(dl_dir + filename)  # Download
+
+
+train_annotations_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Training_2/annotations.json'
+train_images_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Training_2/images'
+
+val_annotations_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Validation_2/annotations.json'
+val_images_path = '/home/patricia/code/w0shitim/foodyai/raw_data/Validation_2/images'
+
+train_coco = COCO(train_annotations_path)
+
+register_coco_instances("training_dataset", {},train_annotations_path, train_images_path)
+register_coco_instances("validation_dataset", {},val_annotations_path, val_images_path)
+
+print("Registered coco instances")
