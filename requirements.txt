@@ -22,11 +22,19 @@ google-cloud-storage
 mlflow
 s3fs
 
+fastapi
+pytz
+uvicorn
+requests
+
 # utilities
 six>=1.14
 joblib
 memoized-property
 termcolor
+
+#text preprocessing
+nltk
 
 # Torch
 --find-links https://download.pytorch.org/whl/torch_stable.html
@@ -44,3 +52,8 @@ detectron2
 
 #git clone https://github.com/facebookresearch/detectron2.git
 #-e detectron2
+
+
+# tests
+httpx
+pytest-asyncio
