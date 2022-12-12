@@ -1,59 +1,15 @@
 import pandas as pd
-import os
 
-from foodyai.ml_logic.model import *
+
 from foodyai.ml_logic.mod_predict import *
-from foodyai.ml_logic.data_aug import MyTrainer
 from foodyai.ml_logic.category import *
-from foodyai.data.datareg import download_file, blob_coco_register
 
 
-def train(data_aug = False):
-    '''
-    train the model if the model_final.pth doesn't exist yet
-    if doesn't exit, train model to save the model trained and its config
-    '''
-
-    #get the data located in a google storage bucket
-    download_file(bucket_name = 'foodygs',
-                              blob_name = 'Nutrition/nutrition.csv',
-                              download_to_disk = False,
-                              destination_file_name = '../raw_data/data.csv')
-
-    blob_coco_register()
-
-    #train the model if the model_final.pth doesn't exist yet
-    model_path = 'logs/model_final.pth'
-    if os.path.isfile(model_path) == False:
-        cfg = custom_config(training_dataset = ("training_dataset",),
-                  num_workers = 2,
-                  trained_model = "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml",
-                  num_classes = 323,
-                  batch_size = 128,
-                  ims_per_batch = 10,
-                  learning_rate = 0.00025,
-                  max_iter = 50000)
-
-        #data augmentation increase time to train. Set to False by default
-        if data_aug == True:
-            model_train(output_dir = "logs/",
-                        trainer_to_choose = MyTrainer,cfg=cfg)
-
-        else:
-            model_train(output_dir = "logs/",
-                        trainer_to_choose = DefaultTrainer,cfg=cfg)
-
+def train():
+    pass
 
 def evaluate():
-    '''
-    evaluate the performance of the model
-    can test different threshold value to find optimum performance
-    '''
-    valResults, cfg, trainer = evaluate_model(validation_dataset = "validation_dataset",
-                   model_path = "model_final.pth",
-                   thresh_test = 0.8)
-
-    return valResults
+    pass
 
 def predict(image_path:str):
     """
