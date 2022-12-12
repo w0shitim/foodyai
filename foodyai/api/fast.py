@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from foodyai.ml_logic.mod_predict import prediction_setup, prediction, get_class_to_category, get_detectron_config
+from foodyai.interface.main import predict
 
 app = FastAPI()
 app.state.model = 'xx'
@@ -15,5 +15,8 @@ app.add_middleware(
 )
 
 @app.get("/predict")
-def predict(img_path: str):
-    pass
+def predict(image_path: str):
+    #pred is a dataframe containing nutrition fact for each food item
+    pred = predict(image_path)
+
+    return pred.to_dict()
