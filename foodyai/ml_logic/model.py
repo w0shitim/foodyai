@@ -51,9 +51,9 @@ def custom_config(training_dataset = ("training_dataset",),
 
 
 def model_train(output_dir = "logs/",
-                trainer_to_choose = DefaultTrainer):
+                trainer_to_choose = DefaultTrainer,cfg=custom_config):
 
-    cfg = custom_config()
+    #cfg = custom_config()
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     cfg.OUTPUT_DIR = output_dir
@@ -61,6 +61,11 @@ def model_train(output_dir = "logs/",
     trainer = trainer_to_choose(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
+
+    #save the model configuration
+    f = open(os.path.join(output_dir,'config.yml'), 'w')
+    f.write(cfg.dump())
+    f.close()
 
     return cfg, trainer
 
@@ -82,8 +87,3 @@ def evaluate_model(validation_dataset = "validation_dataset",
     valResults = inference_on_dataset(trainer.model, val_loader, evaluator)
 
     return valResults, cfg, trainer
-
-if __name__ == '__main__':
-    custom_config()
-    model_train()
-    evaluate_model()
