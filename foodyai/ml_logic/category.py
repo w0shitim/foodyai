@@ -92,6 +92,8 @@ def get_food_info(item_lst:list,BASE_URL:str):
         response_info = requests.post(BASE_URL+endpoint, data=url_query, params=params)
         lst_info.append(response_info.json()[0])
 
+    return lst_info()
+
 def get_nutrition(nut_key:list,nut_info:list)->pd.core.frame.DataFrame:
 
     """
