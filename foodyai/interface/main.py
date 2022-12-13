@@ -1,15 +1,56 @@
-import pandas as pd
+#import pandas as pd
 
-
+from foodyai.ml_logic.model import *
 from foodyai.ml_logic.mod_predict import *
 from foodyai.ml_logic.category import *
+from foodyai.data.data_source import data_path
+from foodyai.ml_logic.data_aug import MyTrainer
 
 
-def train():
-    pass
+def train(data_aug=True,train_again=True):
+    '''
+    train the model if not already trained
+    '''
+
+    #get the data from google cloud stroage bucket
+    data_path()
+
+    #train the model if model_final.pth doesn't exist yet
+    if train_again == True:
+        #model_path = 'logs/model_final.pth'
+        #if os.path.isfile(model_path) == False:
+
+        cfg = custom_config(training_dataset = ("training_dataset",),
+                  num_workers = 2,
+                  trained_model = "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml",
+                  num_classes = 323,
+                  batch_size = 128,
+                  ims_per_batch = 10,
+                  learning_rate = 0.00025,
+                  max_iter = 50000)
+
+        #by default, data augmentation is set to False because of increase training time
+        if data_aug==False:
+            model_train(output_dir = "logs/",
+                    trainer_to_choose = DefaultTrainer,
+                    cfg=cfg)
+
+        else:
+            model_train(output_dir = "logs/",
+                    trainer_to_choose = MyTrainer,
+                    cfg=cfg)
+
 
 def evaluate():
-    pass
+    '''
+    evaluate the preformance of the model
+    try different thresh_test to find sweet spot (best performance)
+    '''
+    valResults, cfg, trainer = evaluate_model(validation_dataset = "validation_dataset",
+                   model_path = "model_final.pth",
+                   thresh_test = 0.8)
+
+    return valResults
 
 def predict(image_path:str):
     """
