@@ -3,7 +3,7 @@
 from foodyai.ml_logic.model import *
 from foodyai.ml_logic.mod_predict import *
 from foodyai.ml_logic.category import *
-from foodyai.data.datareg import blob_coco_register
+from foodyai.data.data_source import data_path
 from foodyai.ml_logic.data_aug import MyTrainer
 
 
@@ -13,7 +13,7 @@ def train(data_aug=False,train_again=False):
     '''
 
     #get the data from google cloud stroage bucket
-    blob_coco_register()
+    data_path()
 
     #train the model if model_final.pth doesn't exist yet
     if train_again == True:
