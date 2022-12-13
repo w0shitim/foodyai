@@ -4,11 +4,11 @@ import importlib
 import numpy as np
 import pandas as pd
 import cv2
-import torch
+#import torch
 from detectron2.engine import DefaultPredictor
 
-from detectron2.evaluation import COCOEvaluator, inference_on_dataset
-from detectron2.data import build_detection_test_loader
+#from detectron2.evaluation import COCOEvaluator, inference_on_dataset
+#from detectron2.data import build_detection_test_loader
 from detectron2.structures import Boxes, BoxMode
 from detectron2.config import get_cfg
 import pycocotools.mask as mask_util

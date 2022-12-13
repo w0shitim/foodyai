@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from foodyai.interface.main import predict
 
 app = FastAPI()
-app.state.model = 'xx'
+app.state.model = 'logs/model_path'
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,3 +20,10 @@ def predict(image_path: str):
     pred = predict(image_path)
 
     return pred.to_dict()
+
+@app.get("/")
+def root():
+
+    return {
+    'greeting': 'Welcolme to the Foodyai API'
+    }
