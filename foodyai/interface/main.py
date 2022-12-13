@@ -7,7 +7,7 @@ from foodyai.data.data_source import data_path
 from foodyai.ml_logic.data_aug import MyTrainer
 
 
-def train(data_aug=False,train_again=False):
+def train(data_aug=True,train_again=True):
     '''
     train the model if not already trained
     '''
