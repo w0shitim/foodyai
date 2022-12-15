@@ -1,15 +1,23 @@
 #import pandas as pd
 
+import os
+import os.path
+
 from foodyai.ml_logic.model import *
-from foodyai.ml_logic.mod_predict import *
+from foodyai.ml_logic.mod_predict import prediction_setup, prediction, get_class_to_category
 from foodyai.ml_logic.category import *
 from foodyai.data.data_source import data_path
 from foodyai.ml_logic.data_aug import MyTrainer
+from foodyai.gc_bucket.load_model import *
+from foodyai.gc_bucket.data import get_class, get_annotations
 
 
 def train(data_aug=True,train_again=True):
     '''
     train the model if not already trained
+
+    Since detectron2 pre trained model needs gpu, it is preferable to
+    run the training withing a vm (in our case google cloud vm)
     '''
 
     #get the data from google cloud stroage bucket
@@ -56,12 +64,29 @@ def predict(image_path:str):
     """
     input an image and output a category name
     re use function defined in ml_logic
+
+    /!\ the raw_data is git ignored. Feel free to modify the path or git ignore file
     """
+    print(Fore.BLUE + 'Starting prediction')
 
     #setup parameters for predictor
     threshold = 0
-    model_path = "logs/model_final.pth"
-    config_path = "logs/config.yml"
+
+    model_path = './raw_data/model_final.pth'
+    if os.path.isfile(model_path) == False:
+        get_model(download_to_disk = True,
+                destination_file_name = './raw_data/model_final.pth')
+        model_path = './raw_data/model_final.pth'
+    else:
+        model_path = './raw_data/model_final.pth'
+
+    config_path = './raw_data/config.yml'
+    if os.path.isfile(config_path) == False:
+        get_config(download_to_disk = True,
+                destination_file_name = './raw_data/config.yml')
+        config_path = './raw_data/config.yml'
+    else:
+        config_path = './raw_data/config.yml'
 
     #run predictor
     predictor = prediction_setup(threshold,
@@ -69,12 +94,11 @@ def predict(image_path:str):
                                  config_path,
                                  model="model_zoo")
 
-
     #open class_to_category json file
     class_to_category = get_class_to_category()
 
     #setup parameters for prediction
-    output_filepath = 'logs/predict_rslt.json'
+    output_filepath = './raw_data/predict_rslt.json'
 
     #run prediction
     df_pred = prediction(predictor,
@@ -82,20 +106,28 @@ def predict(image_path:str):
                class_to_category,
                output_filepath)
 
+    print(Fore.BLUE + '\n➡ Prediction completed, extracting food class for nutrition fact')
+
     #get the category as dataframe
     df_category = get_category()
 
     #left join to get only food category from prediction output
-    df_rslt = df_pred.merge(df_category, on='category_id', how='left')
+    df_rslt = df_pred.merge(df_category, how='inner', on='category_id')
     df_rslt = df_rslt[['category_id','name_readable']]
 
     #turn name_readble into list
     categories = df_rslt['name_readable'].tolist()
+    #map(str, categories)
 
     #clean the list to remove useless terms
     cat_cleaned = preprocessing(categories)
+    #cat_cleaned = ' '.join(categories)
+
+    print(Fore.BLUE + '\n➡ Food cat cleaned and extracted. Ready to request API for nutrition fact')
 
     #define params for API
+    API_KEY = os.environ.get("API_KEY")
+    BASE_URL = os.environ.get("BASE_URL")
 
     params = {'apiKey': API_KEY}
 
@@ -103,7 +135,7 @@ def predict(image_path:str):
     food_items = detect_food(cat_cleaned,API_KEY,BASE_URL,params)
 
     #get food information from API call
-    lst_info = get_food_info(food_items,BASE_URL)
+    lst_info = get_food_info(food_items,BASE_URL,params)
 
     #list of all nutrition facts wanted
     lst_nut_fact = ['sodium','Saturated Fat','Carbohydrates','Fiber','Calories','Cholesterol']
@@ -111,9 +143,11 @@ def predict(image_path:str):
     #output dataset of nutrition fact
     df_nut = get_nutrition(lst_nut_fact,lst_info)
 
+    print(Fore.GREEN + '\n✅ Nutrition fact extracted')
+
     return df_nut
 
 if __name__ == '__main__':
-    train()
-    #predict()
+    #train()
+    predict()
     #evaluate()

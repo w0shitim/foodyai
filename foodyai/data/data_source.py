@@ -5,6 +5,9 @@ from detectron2.data.datasets import register_coco_instances
 
 
 def data_path():
+    '''
+    create coco file from annotations.json
+    '''
     train_annotations_path = '/home/ali_zolfagharian/raw_data/annotations.json'
     train_images_path = '/home/ali_zolfagharian/raw_data/images'
 

@@ -1,4 +1,27 @@
 # ----------------------------------
+#          PACKAGE ACTION
+# ----------------------------------
+
+get_model:
+		python -c 'from foodyai.gc_bucket.load_model import get_model; get_model()'
+
+get_config:
+		python -c 'from foodyai.gc_bucket.load_model import get_config; get_config()'
+
+get_class:
+		python -c 'from foodyai.gc_bucket.data import get_class; get_class()'
+
+get_annot:
+		python -c 'from foodyai.gc_bucket.data import get_annotations; get_annotations()'
+
+run_predict:
+		python -c 'from foodyai.interface.main import predict; predict("./raw_data/009624.jpg")'
+
+run_api:
+	uvicorn foodyai.api.fast:app --reload
+
+
+# ----------------------------------
 #          INSTALL & TEST
 # ----------------------------------
 install_requirements:

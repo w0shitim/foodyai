@@ -13,6 +13,8 @@ from detectron2.structures import Boxes, BoxMode
 from detectron2.config import get_cfg
 import pycocotools.mask as mask_util
 
+from foodyai.gc_bucket.data import get_class
+
 
 def prediction_setup(threshold:float, model_path:str, config_path:str,model="model_zoo"):
     """
@@ -32,7 +34,8 @@ def prediction_setup(threshold:float, model_path:str, config_path:str,model="mod
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = threshold
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 323
 
-    cfg.MODEL.DEVICE = "cuda"
+    cfg.MODEL.DEVICE = "cpu" #if MacOS
+    #cfg.MODEL.DEVICE = "cuda" #if Windows (but install cuda in requirements)
 
     predictor = DefaultPredictor(cfg)
 
@@ -95,7 +98,15 @@ def get_class_to_category():
     """
     open the class_to_category json file
     """
-    class_to_category = {}
-    with open("class_to_category.json") as fp:
+    config_path = './raw_data/class_to_category.json'
+    if os.path.isfile(config_path) == False:
+        get_class(download_to_disk = True,
+                destination_file_name = './raw_data/class_to_category.json')
+        class_to_cat = './raw_data/class_to_category.json'
+    else:
+        class_to_cat = './raw_data/class_to_category.json'
+
+    #class_to_category = {}
+    with open(class_to_cat) as fp:
         class_to_category = json.load(fp)
     return class_to_category

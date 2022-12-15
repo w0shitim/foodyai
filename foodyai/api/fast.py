@@ -16,7 +16,9 @@ app.add_middleware(
 
 @app.get("/predict")
 def predict(image_path: str):
-    #pred is a dataframe containing nutrition fact for each food item
+    '''
+    pred is a dataframe containing nutrition fact for each food item
+    '''
     pred = predict(image_path)
 
     return pred.to_dict()
