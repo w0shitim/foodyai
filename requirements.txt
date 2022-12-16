@@ -1,22 +1,30 @@
+# ------------
 # packaging
+# ------------
 pip>=9
 setuptools>=26
 twine
 wheel>=0.29
 
+# ------------
 # data science
+# ------------
 numpy
 pandas
 scikit-learn
 
+# ------------
 # tests/linter
+# ------------
 black
 coverage
 flake8
 pytest
 yapf
 
+# ------------
 # API
+# ------------
 gcsfs
 google-cloud-storage
 mlflow
@@ -27,40 +35,52 @@ pytz
 uvicorn
 requests
 
+# ------------
 # utilities
+# ------------
 six>=1.14
 joblib
 memoized-property
 termcolor
 
+# ------------
 #text preprocessing
+# ------------
 nltk
 
+# ------------
 # Torch
+# ------------
 --find-links https://download.pytorch.org/whl/torch_stable.html
-torch==1.9.0
-#+cu111
-torchvision==0.10.0
-#+cu111
+torch==1.9.0+cu111
+torchvision==0.10.0+cu111
 
 cython
 pyyaml==5.1
-pycocotools
+pycocotools==2.0.3
 
+# ------------
 #Detectron
-#--find-links https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.9/index.html
-git+https://github.com/facebookresearch/detectron2.git
-#detectron2
+# ------------
+--find-links https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.9/index.html
+#git+https://github.com/facebookresearch/detectron2.git
+detectron2
 
 #git clone https://github.com/facebookresearch/detectron2.git
 #-e detectron2
 
+# ------------
 # tests
+# ------------
 httpx
 pytest-asyncio
 
+# ------------
 #design
+# ------------
 colorama
 
+# ------------
 #other
+# ------------
 opencv-python

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from foodyai.interface.main import predict
 
 app = FastAPI()
-app.state.model = 'logs/model_path'
+app.state.model = './raw_data/model_path'
 
 app.add_middleware(
     CORSMiddleware,

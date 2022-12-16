@@ -12,7 +12,7 @@ from foodyai.gc_bucket.load_model import *
 from foodyai.gc_bucket.data import get_class, get_annotations
 
 
-def train(data_aug=True,train_again=True):
+def train(data_aug=True,train_again=False):
     '''
     train the model if not already trained
 
@@ -67,11 +67,11 @@ def predict(image_path:str):
 
     /!\ the raw_data is git ignored. Feel free to modify the path or git ignore file
     """
-    
+
     print(Fore.BLUE + 'Starting prediction')
 
     #setup parameters for predictor
-    threshold = 0
+    threshold = 0.15
 
     model_path = './raw_data/model_final.pth'
     if os.path.isfile(model_path) == False:
@@ -119,10 +119,11 @@ def predict(image_path:str):
     #turn name_readble into list
     categories = df_rslt['name_readable'].tolist()
     #map(str, categories)
+    #print(categories)
 
     #clean the list to remove useless terms
-    cat_cleaned = preprocessing(categories)
-    #cat_cleaned = ' '.join(categories)
+    #cat_cleaned = preprocessing(categories)
+    cat_cleaned = ' '.join(categories)
 
     print(Fore.BLUE + '\n➡ Food cat cleaned and extracted. Ready to request API for nutrition fact')
 
@@ -134,9 +135,11 @@ def predict(image_path:str):
 
     #use api to detect food items
     food_items = detect_food(cat_cleaned,API_KEY,BASE_URL,params)
+    #print(food_items)
 
     #get food information from API call
     lst_info = get_food_info(food_items,BASE_URL,params)
+    #print(lst_info)
 
     #list of all nutrition facts wanted
     lst_nut_fact = ['sodium','Saturated Fat','Carbohydrates','Fiber','Calories','Cholesterol']
@@ -145,6 +148,8 @@ def predict(image_path:str):
     df_nut = get_nutrition(lst_nut_fact,lst_info)
 
     print(Fore.GREEN + '\n✅ Nutrition fact extracted')
+
+    print(df_nut)
 
     return df_nut
 

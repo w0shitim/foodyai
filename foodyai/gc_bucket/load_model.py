@@ -18,7 +18,7 @@ def get_model(download_to_disk = True,
     #print(Fore.BLUE + "Getting the model from the google storage bucket")
 
     BUCKET_NAME = "foodygs"
-    blob_name = "foodyai_data/logs/model_final.pth"
+    blob_name = "foodyai_data/model_final/model_final.pth"
 
     storage_client = storage.Client()
 
@@ -58,7 +58,7 @@ def get_config(download_to_disk = True,
     #print(Fore.BLUE + "Getting the model from the google storage bucket")
 
     BUCKET_NAME = "foodygs"
-    blob_name = "foodyai_data/logs/config.yml"
+    blob_name = "foodyai_data/model_final/config.yml"
 
     storage_client = storage.Client()
 
