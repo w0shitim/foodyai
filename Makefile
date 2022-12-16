@@ -15,7 +15,7 @@ get_annot:
 		python -c 'from foodyai.gc_bucket.data import get_annotations; get_annotations()'
 
 run_predict:
-		python -c 'from foodyai.interface.main import predict; predict("./raw_data/009624.jpg")'
+		python -c 'from foodyai.interface.main import predict; predict("./raw_data/151440.jpg")'
 
 run_api:
 	uvicorn foodyai.api.fast:app --reload

@@ -87,10 +87,10 @@ def prediction(predictor:DefaultPredictor,image_path:str,class_to_category:dict,
                 output["segmentation"] = masks[idx]
             annotations.append(output)
 
-            with open(output_filepath, "w") as fp:
-                json.dump(annotations, fp)
+    with open(output_filepath, "w") as fp:
+        json.dump(annotations, fp)
 
-            df = pd.read_json(output_filepath)
+    df = pd.read_json(output_filepath)
 
     return df[['image_id','category_id','score']]
 
