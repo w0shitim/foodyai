@@ -67,6 +67,7 @@ def predict(image_path:str):
 
     /!\ the raw_data is git ignored. Feel free to modify the path or git ignore file
     """
+    
     print(Fore.BLUE + 'Starting prediction')
 
     #setup parameters for predictor
