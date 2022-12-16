@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer as wnl
 
-TRAIN_ANNOTATIONS_PATH = 'Training_2/annotations.json'
+TRAIN_ANNOTATIONS_PATH = './raw_data/annotations.json'
 train_coco = COCO(TRAIN_ANNOTATIONS_PATH)
 
 def get_category():
@@ -77,9 +77,10 @@ def detect_food(text:str,API_KEY:str,BASE_URL:str,params:dict):
 
     return item_lst
 
-def get_food_info(item_lst:list,BASE_URL:str):
+def get_food_info(item_lst:list,BASE_URL:str,params):
     """
-
+    get food information which includes:
+    serving, nutrition, and ingredient list
     """
     lst_info = []
     endpoint = "recipes/parseIngredients"
@@ -92,7 +93,7 @@ def get_food_info(item_lst:list,BASE_URL:str):
         response_info = requests.post(BASE_URL+endpoint, data=url_query, params=params)
         lst_info.append(response_info.json()[0])
 
-    return lst_info()
+    return lst_info
 
 def get_nutrition(nut_key:list,nut_info:list)->pd.core.frame.DataFrame:
 
